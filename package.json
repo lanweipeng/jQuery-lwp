@@ -12,5 +12,7 @@
   ],
   "author": "lanweipeng",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "jquery": "^3.5.1"
+  }
 }
