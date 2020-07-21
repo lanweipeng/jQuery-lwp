@@ -13,8 +13,11 @@ console.log($.type(Symbol()))
 console.log($.type(null))
 //undefined
 console.log($.type(undefined))
+//object
+console.log($.type({name:'lwp'}))
 //function
 console.log($.type(function(){}))
+console.log($.type(class Person{}))
 //array
 console.log($.type([2]))
 //date

@@ -1,0 +1,35 @@
+<title>菜鸟教程(runoob.com)</title>	
+<script src="../node_modules/jquery/dist/jquery.js"></script>
+<!-- <script src="../index.js"></script> -->
+</head>
+<body>
+
+<div id="log">
+	<h3>Content:</h3>
+</div>
+<script>
+$(function () { 
+	var $log = $( "#log" ),
+		str = "hello, <b>my name is</b> jQuery.",
+		html = $.parseHTML( str ),
+		nodeNames = [];
+	//添加已解析的HTML
+  $log.append( html );
+  console.log(html)
+	//集合已解析HTML的节点名称
+	$.each( html, function( i, el ) {
+    console.log(el)
+		nodeNames[i] = "<li>" + el.nodeName + "</li>";
+  });
+  console.log(nodeNames)
+  
+	// 插入节点名
+	$log.append( "<h3>Node Names:</h3>" );
+	$( "<ol></ol>" )
+		.append( nodeNames.join( "" ) )
+		.appendTo( $log );
+})
+</script>
+ 
+</body>
+</html>

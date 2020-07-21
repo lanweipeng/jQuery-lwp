@@ -1,4 +1,24 @@
-var element
+var element,
+class2type={
+"[object Number]":"number",
+"[object Boolean]":"boolean",
+"[[object String]":"string",
+"[object BigInt]":"bigint",
+"[object Symbol]":"symbol",
+"[object Null]":"null",
+"[object Undefined]":"undefined",
+"[object Object]":"object",
+"[object Function]":"function",
+"[object Array]":"array",
+"[object Date]":"date",
+"[object RegExp]":"rgexp",
+"[object Error]":"error",
+"[object String]":"string",
+},
+arr=[]
+push=arr.push
+
+// console.log(class2type)
 var $ = function (select) {
   if(typeof select === 'function'){
     window.onload=select()
@@ -58,4 +78,54 @@ $.setClipboardText=function(event,value){
 function $(body){
   console.log(body)
 // window.onload=body()
+}
+$.type=ToType;
+toString=Object.prototype.toString;
+function ToType(obj){
+  console.log(toString.call(obj))
+return class2type[toString.call(obj)]
+}
+$.isPlainObject=function(obj){
+  console.log(class2type[toString.call(obj)])
+return class2type[toString.call(obj)]==='object'
+}
+$.prototype={
+  merge:function(first,second){
+return [...first,...second]
+  },
+}
+$.merge = function (first, second) {
+  var len = +second.length
+  i = first.length
+  j = 0;
+  for (; j < len; j++) {
+    first[i++] = second[j];
+  }
+  first.length = i
+  return first
+}
+$.parseHTML=function(str){
+
+}
+$.isWindow=function(obj){
+  return obj===window
+  // return obj!=null && obj===window
+}
+
+$.makeArray=function(arr,result){
+  var ret=result||[];
+  if(arr!=null){
+if(isArrayLike(Object(arr))){
+$.merge(ret,typeof arr==="string"?[arr]:arr)
+}else{
+  // push.call(ret,arr)
+  ret.push(arr)
+}
+  }
+  return ret
+}
+function isArrayLike(obj){
+  var length=!!obj&&length in obj&&obj.length,
+  type=$.type(obj)
+  return type==="array"||length===0||(length-1) in obj
 }
