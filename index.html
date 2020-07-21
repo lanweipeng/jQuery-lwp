@@ -7,6 +7,10 @@
   <title>Document</title>
 </head>
 <body>
+  <div>
+    .class
+    <div id="red"></div>
+  </div>
   <script src="./index.js"></script>
   <!-- <script src="./example/type.js"></script> -->
   <!-- <script src="./example/isPlainObject.js"></script> -->
@@ -16,6 +20,24 @@
 
   <script>
     // $(function(){
+
+      var jQ = function(){
+  return new jQ();
+}
+jQ.prototype = {
+  
+}
+debugger
+jQ();
+    //   $('#red').css('background-color','red')
+    // })
+    console.log(jQuery('#red'))
+    var data = [];
+Object.defineProperty(window,data,{set() { 
+  console.log(data.length)
+  return arr.length}})
+data.push(1) // 1
+    // jQuery('#red').css('background-color','red')
     //   console.log('hh')
     // })
     </script>
