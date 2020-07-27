@@ -1,5 +1,7 @@
-let obj={1:'lwp',2:10,length:3}
+let obj={1:'lwp',0:10,length:2}
+let obj2={1:'lwp',0:10}
 console.log($.makeArray(obj))
+console.log($.makeArray(obj2,obj))
 console.log($.makeArray("obj"))
 console.log($.makeArray(1))
 console.log($.makeArray(0))

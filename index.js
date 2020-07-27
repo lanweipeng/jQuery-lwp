@@ -1,40 +1,22 @@
-var element,
-class2type={
-"[object Number]":"number",
-"[object Boolean]":"boolean",
-"[[object String]":"string",
-"[object BigInt]":"bigint",
-"[object Symbol]":"symbol",
-"[object Null]":"null",
-"[object Undefined]":"undefined",
-"[object Object]":"object",
-"[object Function]":"function",
-"[object Array]":"array",
-"[object Date]":"date",
-"[object RegExp]":"rgexp",
-"[object Error]":"error",
-"[object String]":"string",
-},
-arr=[]
-push=arr.push
+var element
 
-// console.log(class2type)
-var s
+
+
 var $ = function (select) {
-  if(typeof select === 'function'){
-    window.onload=select()
+  if (typeof select === 'function') {
+    window.onload = select()
   }
   else if (select === undefined) {
 
     return
   }
- else if (select instanceof Node) {
+  else if (select instanceof Node) {
     element = select
     return $
   } else if (select.substr(0, 1) == '#') {
-    s=document.querySelector(select)
+    s = document.querySelector(select)
     return document.querySelector(select)
-  }else{
+  } else {
     return document.querySelectorAll(select)
 
   }
@@ -67,91 +49,154 @@ $.removeClass = function (string) {
   element.classList.remove(string)
 }
 
-$.getClipboardText=function(event){
-  var clipboardData=(event.clipboardData||window.clipboardData)
+$.getClipboardText = function (event) {
+  var clipboardData = (event.clipboardData || window.clipboardData)
   return clipboardData.getData('text')
 }
-$.setClipboardText=function(event,value){
-  if(event.clipboardData){
-    return event.clipboardData.setData('text/plian',value)
-  }else if(window.clipboardData){
-    return window.clipboardData.setData('text',value)
+$.setClipboardText = function (event, value) {
+  if (event.clipboardData) {
+    return event.clipboardData.setData('text/plian', value)
+  } else if (window.clipboardData) {
+    return window.clipboardData.setData('text', value)
   }
 }
-$.css=function(x,y){
-console.log(s)
+$.css = function (x, y) {
+  console.log(s)
 }
-const JQ=function(){};
-JQ.prototype={
-  css:function(x,y){
-    console.log(s)
+
+
+toString = Object.prototype.toString;
+
+
+
+
+
+
+
+(function (window) {
+  var jQuery = (function () {
+    var class2type={},
+      arr = [],
+    push = arr.push;
+    var isFunction = function (obj) {
+      return typeof obj === 'function';
+    },
+    isWindow=function(obj){
+      return obj!=null&&obj.window===window;
     }
-}
-var jq=new JQ();
-function $(body){
-  console.log(body)
-// window.onload=body()
-}
-$.type=ToType;
-toString=Object.prototype.toString;
-function ToType(obj){
-  console.log(toString.call(obj))
-return class2type[toString.call(obj)]
-}
-$.isPlainObject=function(obj){
-  console.log(class2type[toString.call(obj)])
-return class2type[toString.call(obj)]==='object'
-}
-$.prototype={
-  merge:function(first,second){
-return [...first,...second]
-  },
-}
-$.merge = function (first, second) {
-  var len = +second.length
-  i = first.length
-  j = 0;
-  for (; j < len; j++) {
-    first[i++] = second[j];
-  }
-  first.length = i
-  return first
-}
-$.parseHTML=function(str){
+    function ToType(obj) {
+      // console.log(toString.call(obj))
+      return class2type[toString.call(obj)]
+    }
+    var jQuery = function (selector) {
+      return new jQuery.fn.init(selector);
+    };
+    jQuery.fn = jQuery.prototype = {
+      length: 0,
+      each: function (callback) {//啥用
+        return jQuery.each(this, callback)
+      }
+    }
+    var init =
+      jQuery.fn.init =
+      function (selector) {
+        if (!selector) {
+          return this;
+        } else {
+          if (jQuery.type(selector) === 'string') {
+            var elem = document.getElementById(selector.split('#')[1]);
+            this[0] = elem;
+            this.length = 1
+          }
+        }
+        return jQuery.makeArray(selector, this)
+      }
+    init.prototype = jQuery.fn;
 
-}
-$.isWindow=function(obj){
-  return obj===window
-  // return obj!=null && obj===window
-}
+    // jQuery.prototype.init = jQuery.fn;
+    jQuery.extend = jQuery.fn.extend = function () {
+      var i = 1,
+        option,
+        src,
+        copy,
+        deep=false,
+        target = arguments[0] || {};
 
-$.makeArray=function(arr,result){
-  var ret=result||[];
-  if(arr!=null){
-if(isArrayLike(Object(arr))){
-$.merge(ret,typeof arr==="string"?[arr]:arr)
-}else{
-  // push.call(ret,arr)
-  ret.push(arr)
-}
-  }
-  return ret
-}
-function isArrayLike(obj){
-  var length=!!obj&&length in obj&&obj.length,
-  type=$.type(obj)
-  return type==="array"||length===0||(length-1) in obj
-}
-var jQuery=function(selector){
-  return new jQuery.fn.init(selector);
-};
-jQuery.fn=jQuery.prototype={
+      var length  = arguments.length;
+      if (i === length) {
+        target = this;
+        i--;
+      }
+      for (; i < length; i++) {
+        if ((options = arguments[i]) != null) {
+          for (name in options) {
+            // src=target[name];
+            copy = options[name];
+            target[name] = copy;
+          }
+        }
+      }
+      return target;
+    }
+    jQuery.extend({
+      isPlainObject: function (obj) {
+        return class2type[toString.call(obj)] === 'object'
+      },
+      merge: function (first, second) {
+        var len = +second.length
+        i = first.length
+        j = 0;
+        for (; j < len; j++) {
+          first[i++] = second[j];
+        }
+        first.length = i
+        return first
+      },
+      makeArray: function (arr, result) {
+        var ret = result || [];
+        if (arr != null) {
+          if (isArrayLike(Object(arr))) {
+            jQuery.merge(ret, typeof arr === "string" ? [arr] : arr)
+          } else {
+            push.call(ret, arr)
+          }
+        }
+        return ret
+      },
+      each: function (obj, callback) {
+        var length,i=0;
+        if(isArrayLike(obj)){
+          length=obj.length;
+          for(; i<length;i++){
+            if(callback.call(obj[i],i,obj[i])===false){
+              break;
+            }
+          }
+        }else{
+          for(i in obj){
+            if(callback.call(obj[i],i,obj[i])===false){
+              break;
+            }
+          }
+        }
+      }
+    });
+    
+    jQuery.each(['Number','Boolean','String','BigInt','Symbol','Null','Undefined',
+    'Object','Function','Array','Date','RegExp','Error'],function(index,item){
+      class2type["[object "+item+"]"]=item.toLowerCase();
+    });
+    jQuery.type = ToType;
+    jQuery.isWindow=isWindow;
+    jQuery.isFunction=isFunction;
+    function isArrayLike(obj) {
+      var length = !!obj && "length" in obj && obj.length,
+        type = ToType(obj)
+      return type === "array" || length === 0 || (length - 1) in obj
+    }
+    
 
-}
-var init=jQuery.fn.init=function(selector){
-  var elem=document.getElementById(selector.split('#')[1]);
-  this[0]=elem;
-  this.length=1
-  return this
-}
-init.prototype=jQuery.fn;
+    return jQuery;
+  })()
+  window.$ = window.jQuery = jQuery;
+})(window)

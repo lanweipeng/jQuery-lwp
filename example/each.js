@@ -1,0 +1,14 @@
+$.each([23,45],function(index,value){
+  console.log(this)
+  console.log(index,value)
+})
+$.each({name:'lwp',age:3},function(index,value){
+  console.log(index,value)
+})
+$([3,4]).each(function(index,value){
+  console.log(index,value)
+})
+debugger
+$({name:'lwp',age:3}).each(function(index,value){
+  console.log(index,value)
+})
