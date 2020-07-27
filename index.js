@@ -79,7 +79,7 @@ toString = Object.prototype.toString;
       arr = [],
     push = arr.push;
     var isFunction = function (obj) {
-      return typeof obj === 'function';
+      return typeof obj === 'function'&&typeof obj.nodeType !== 'number';
     },
     isWindow=function(obj){
       return obj!=null&&obj.window===window;
@@ -123,16 +123,30 @@ toString = Object.prototype.toString;
         target = arguments[0] || {};
 
       var length  = arguments.length;
+      if(typeof target==='boolean'){
+        deep=target;
+        target=arguments[i]||{};
+        i++
+      }
       if (i === length) {
         target = this;
         i--;
       }
+      if(typeof target!=='object'&&!isFunction(target)){
+        target={}
+      }
       for (; i < length; i++) {
         if ((options = arguments[i]) != null) {
           for (name in options) {
-            // src=target[name];
+            
             copy = options[name];
-            target[name] = copy;
+            if(deep&&copy&&(jQ)){
+              src=target[name];
+              target[name] =jQuery.extend(deep,clone,copy)
+            }else if(copy!==undefined){
+              target[name] = copy;
+
+            }
           }
         }
       }
@@ -179,7 +193,7 @@ toString = Object.prototype.toString;
             }
           }
         }
-      }
+      },
     });
     
     jQuery.each(['Number','Boolean','String','BigInt','Symbol','Null','Undefined',
