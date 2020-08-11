@@ -1,31 +1,18 @@
 
-//number false
-console.log($.isPlainObject(3))
-//boolean false
-console.log($.isPlainObject(true))
-//string false
-console.log($.isPlainObject('4'))
-console.log($.isPlainObject(new String('4')))
-//bigint false
-console.log($.isPlainObject(300000303000030300n))
-//symbol false
-console.log($.isPlainObject(Symbol()))
-//null false
-console.log($.isPlainObject(null))
-//undefined false
-console.log($.isPlainObject(undefined))
-//object true
-console.log($.isPlainObject({name:'lwp'}))
-console.log($.isPlainObject({}))
-console.log($.isPlainObject(new Object()))
-//function false
-console.log($.isPlainObject(function(){}))
-console.log($.isPlainObject(class Person{}))
-//array false
-console.log($.isPlainObject([2]))
-//date false
-console.log($.isPlainObject(new Date()))
-//regexp false
-console.log($.isPlainObject(/3/))
-//error false
-console.log($.isPlainObject(new Error()))
+console.log($.isPlainObject({}));//true
+console.log($.isPlainObject(new Object()));//true
+console.log($.isPlainObject({name:'lwp'}));//true
+console.log($.isPlainObject({say:function(){}}));//true
+console.log($.isPlainObject('string'));//false
+console.log($.isPlainObject(12));//false
+console.log($.isPlainObject([]));//false
+
+console.log($.isPlainObject(function(){}));//false
+function Person(){
+  this.name='zhangsan'
+}
+debugger
+console.log($.isPlainObject(new Person()));//false
+console.log($.isPlainObject(Object.create(null)));//true
+console.log($.isPlainObject(Object.create(Object.prototype)));//true
+console.log($.isPlainObject(Object()));//true

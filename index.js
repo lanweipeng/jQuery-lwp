@@ -77,6 +77,7 @@ toString = Object.prototype.toString;
   var jQuery = (function () {
     var class2type={},
       arr = [],
+     getProto= Object.getPrototypeOf,
     push = arr.push;
     var isFunction = function (obj) {
       return typeof obj === 'function'&&typeof obj.nodeType !== 'number';
@@ -97,22 +98,32 @@ toString = Object.prototype.toString;
         return jQuery.each(this, callback)
       }
     }
-    var init =
+    var root,
+     init =
       jQuery.fn.init =
-      function (selector) {
+      function (selector,,root) {
         if (!selector) {
           return this;
-        } else {
+        } 
+        root=root||rootjQuery;
+        // else {
           if (jQuery.type(selector) === 'string') {
             var elem = document.getElementById(selector.split('#')[1]);
             this[0] = elem;
             this.length = 1
+
+          }else if(selector.nodeType){
+            this[0]=selector;
+            this.length=1;
+            return this;
+          }else if(jQuery.isFunction(selector)){
+            return root.ready!==undefined?root.ready(selector):selector(jQuery)
           }
-        }
+        // }
         return jQuery.makeArray(selector, this)
       }
     init.prototype = jQuery.fn;
-
+    rootjQuery=jQuery(document);
     // jQuery.prototype.init = jQuery.fn;
     jQuery.extend = jQuery.fn.extend = function () {
       var i = 1,
