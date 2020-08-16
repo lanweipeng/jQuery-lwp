@@ -60,7 +60,7 @@ var flat = arr.flat ? function( array ) {
 
 var push = arr.push;
 
-var indexOf = arr.indexOf;
+var indexOf = arr.indexOf;//为啥不用Array.prototype.indexOf
 
 var class2type = {};
 
@@ -412,7 +412,7 @@ jQuery.extend( {
 	},
 
 	inArray: function( elem, arr, i ) {
-		return arr == null ? -1 : indexOf.call( arr, elem, i );
+		return arr == null ? -1 : indexOf.call( arr, elem, i );//传入null或者undefined会报错Array.prototype.indexOf called on null or undefined。然后这里是arr==null。又因为null==undefined，因此相当于判断arr是否是null或是undefined了。
 	},
 
 	// Support: Android <=4.0 only, PhantomJS 1 only
@@ -3456,7 +3456,7 @@ jQuery.Callbacks = function( options ) {
 	// (we check in cache first)
 	options = typeof options === "string" ?
 		createOptions( options ) :
-		jQuery.extend( {}, options );
+		jQuery.extend( {}, options );//防止options传非对象
 
 	var // Flag to know if list is currently firing
 		firing,
@@ -3529,7 +3529,7 @@ jQuery.Callbacks = function( options ) {
 
 			// Add a callback or a collection of callbacks to the list
 			add: function() {
-				if ( list ) {
+				if ( list ) {//为什么要判断呢
 
 					// If we have memory from a past run, we should fire after adding
 					if ( memory && !firing ) {
@@ -3594,7 +3594,7 @@ jQuery.Callbacks = function( options ) {
 			// Abort any current/pending executions
 			// Clear all callbacks and values
 			disable: function() {
-				locked = queue = [];
+				locked = queue = [];//locked为什么不写true而写[]
 				list = memory = "";
 				return this;
 			},
@@ -4140,6 +4140,11 @@ if ( document.readyState === "complete" ||
 
 // Multifunctional method to get and set values of a collection
 // The value/s can optionally be executed if it's a function
+/*
+chainable 0 get 1 set
+emptyGet
+raw str:true,function:false
+*/
 var access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
 	var i = 0,
 		len = elems.length,
@@ -4213,7 +4218,7 @@ function fcamelCase( _all, letter ) {
 // Support: IE <=9 - 11, Edge 12 - 15
 // Microsoft forgot to hump their vendor prefix (#9572)
 function camelCase( string ) {
-	return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
+	return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );//为什么要替换ms
 }
 var acceptData = function( owner ) {
 

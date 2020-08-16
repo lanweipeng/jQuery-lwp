@@ -75,10 +75,11 @@ toString = Object.prototype.toString;
 
 (function (window) {
   var jQuery = (function () {
-    var class2type={},
+    var class2type = {},
       arr = [],
-     getProto= Object.getPrototypeOf,
-    push = arr.push;
+      getProto = Object.getPrototypeOf,
+      push = arr.push,
+      indexOf = arr.indexOf;
     var isFunction = function (obj) {
       return typeof obj === 'function'&&typeof obj.nodeType !== 'number';
     },
@@ -98,29 +99,30 @@ toString = Object.prototype.toString;
         return jQuery.each(this, callback)
       }
     }
-    var root,
+    var rootjQuery,
      init =
       jQuery.fn.init =
-      function (selector,,root) {
+      function (selector,context,root) {
         if (!selector) {
           return this;
         } 
         root=root||rootjQuery;
         // else {
-          if (jQuery.type(selector) === 'string') {
-            var elem = document.getElementById(selector.split('#')[1]);
-            this[0] = elem;
-            this.length = 1
+          // if (jQuery.type(selector) === 'string') {
+          //   var elem = document.getElementById(selector.split('#')[1]);
+          //   this[0] = elem;
+          //   this.length = 1
 
-          }else if(selector.nodeType){
-            this[0]=selector;
-            this.length=1;
-            return this;
-          }else if(jQuery.isFunction(selector)){
-            return root.ready!==undefined?root.ready(selector):selector(jQuery)
-          }
+          // }else if(selector.nodeType){
+          //   this[0]=selector;
+          //   this.length=1;
+          //   return this;
+          // }else if(jQuery.isFunction(selector)){
+          //   return root.ready!==undefined?root.ready(selector):selector(jQuery)
+          // }
         // }
-        return jQuery.makeArray(selector, this)
+        // return jQuery.makeArray(selector, this);
+        return this;
       }
     init.prototype = jQuery.fn;
     rootjQuery=jQuery(document);
@@ -205,6 +207,9 @@ toString = Object.prototype.toString;
           }
         }
       },
+      inArray:function(elem,arr,i){
+        return arr == null ? -1 : indexOf.call(arr,elem,i)
+      }
     });
     
     jQuery.each(['Number','Boolean','String','BigInt','Symbol','Null','Undefined',
@@ -219,7 +224,71 @@ toString = Object.prototype.toString;
         type = ToType(obj)
       return type === "array" || length === 0 || (length - 1) in obj
     }
-    
+    var rnothtmlwhite=/[^\x20\r\n\t\f]+/g;
+    function createOptions(options){
+      var option={};
+      jQuery.each(options.match(rnothtmlwhite)||[],function(_,flag){
+        option[flag]=true;
+      });
+      return option;
+    }
+    jQuery.Callbacks = function (flags) {
+      flags=typeof flags==='string'?createOptions(flags):flags;
+      var list= [],locked
+      self = {
+        add: function (fn) {
+          if(list){
+            (function add(args){
+              jQuery.each(args,function(_,arg){
+                if(isFunction(arg)){
+                  list.push(arg)
+                }else if(arg&&arg.length&&ToType(arg)!=='string'){
+                  add(arg)
+                }
+              })
+            })(arguments);
+          }
+          return this;
+        },
+        fire: function (value) {
+          if(list){
+            locked=locked||flags&&flags.once//为什么要locked||
+            list.forEach(item => {
+              item(value)
+            });
+            if(locked){
+              list=""
+            }
+          }
+          return this;
+        },
+        remove:function(fn){
+          list=list.filter(item=>item!=fn);
+          return this;
+        },
+        has:function(fn){
+          return fn?jQuery.inArray(fn,list)>-1:list.length>0;
+        },
+        disable:function(){
+          locked=[];
+          list="";
+          return this;
+        },
+        empty:function(){
+          list=[];
+          return this;
+        },
+        lock:function(){
+          locked=[]
+          list="";
+          return this;
+        },
+        locked:function(){
+          return !!locked;
+        }
+      };
+      return self;
+    }
 
     return jQuery;
   })()
