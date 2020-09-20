@@ -80,6 +80,11 @@ toString = Object.prototype.toString;
       getProto = Object.getPrototypeOf,
       push = arr.push,
       indexOf = arr.indexOf;
+      var flat=arr.flat?function(array){
+        return arr.flat.call(array)
+      }:function(array){
+        return arr.concat.apply([],array)
+      }
     var isFunction = function (obj) {
       return typeof obj === 'function'&&typeof obj.nodeType !== 'number';
     },
@@ -169,6 +174,7 @@ toString = Object.prototype.toString;
       isPlainObject: function (obj) {
         return class2type[toString.call(obj)] === 'object'
       },
+      noop:function(){},
       merge: function (first, second) {
         var len = +second.length
         i = first.length
@@ -209,6 +215,44 @@ toString = Object.prototype.toString;
       },
       inArray:function(elem,arr,i){
         return arr == null ? -1 : indexOf.call(arr,elem,i)
+      },
+      isEmptyObject:function(obj){
+        var name;
+        for(name in obj){
+          return false;
+        }
+        return true;
+      },
+      grep:function(arr,callback,invert){
+        var res=[],
+        callbackExpec=!invert;
+        for(let i=0;i<arr.length;i++){
+          var callbackInverse=!callback(arr[i],i);
+          if(callbackInverse!==callbackExpec){
+            res.push(arr[i])
+          }
+        }
+        return res
+      },
+      map:function(elems,callback,arg){
+        var i=0,len=elems.length,res=[],value;
+        if(isArrayLike(elems)){
+          for(;i<len;i++){
+            value=callback(elems[i],i,arg);
+            if(value!=null){
+              res.push(value)
+            }
+          }
+        }else{
+          for(var key in elems){
+            value=callback(elems[key],key,arg);
+            if(value!=null){
+              res.push(value)
+            }
+          }
+        }
+        
+        return flat(res);
       }
     });
     
@@ -221,7 +265,10 @@ toString = Object.prototype.toString;
     jQuery.isFunction=isFunction;
     function isArrayLike(obj) {
       var length = !!obj && "length" in obj && obj.length,
-        type = ToType(obj)
+        type = ToType(obj);
+        if(isFunction(obj)||isWindow(obj)){
+          return false;
+        }
       return type === "array" || length === 0 || (length - 1) in obj
     }
     var rnothtmlwhite=/[^\x20\r\n\t\f]+/g;
@@ -232,16 +279,24 @@ toString = Object.prototype.toString;
       });
       return option;
     }
-    jQuery.Callbacks = function (flags) {
-      flags=typeof flags==='string'?createOptions(flags):flags;
+    jQuery.fn.extend({
+      on:function(){
+
+      }
+    })
+    jQuery.Callbacks = function (options) {
+      options=typeof options==='string'?createOptions(options):options;
       var list= [],locked
       self = {
         add: function (fn) {
           if(list){
             (function add(args){
+              var unique=options&&options.unique||false
               jQuery.each(args,function(_,arg){
                 if(isFunction(arg)){
-                  list.push(arg)
+                  if (!unique ||!self.has(arg)) { 
+                    list.push(arg)
+                  }
                 }else if(arg&&arg.length&&ToType(arg)!=='string'){
                   add(arg)
                 }
@@ -252,7 +307,7 @@ toString = Object.prototype.toString;
         },
         fire: function (value) {
           if(list){
-            locked=locked||flags&&flags.once//为什么要locked||
+            locked=locked||options&&options.once//为什么要locked||
             list.forEach(item => {
               item(value)
             });
@@ -288,8 +343,12 @@ toString = Object.prototype.toString;
         }
       };
       return self;
-    }
-
+    };
+    jQuery.each('click'.split(' '),function(_i,name){
+      jquery.fn[name]=function(){
+        return arguments.length>0&&this.on(name)
+      }
+    })
     return jQuery;
   })()
   window.$ = window.jQuery = jQuery;

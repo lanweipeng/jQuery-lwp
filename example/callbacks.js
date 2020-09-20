@@ -61,5 +61,13 @@ separate('lock');
 var callbacks13=$.Callbacks();
 callbacks13.add(sayHi).fire('lwp').lock().add(sayHello).fire('lwp');
 separate('locked');
-console.log(callbacks13.locked())
-
+console.log(callbacks13.locked());
+separate('unique');
+var callbacks14=$.Callbacks("unique");
+callbacks14.add( sayHello );
+callbacks14.fire( "foo" );
+callbacks14.add( sayHello ); // repeat addition
+callbacks14.add( sayHi );
+callbacks14.fire( "bar" );
+callbacks14.remove( sayHi );
+callbacks14.fire( "foobar" );
