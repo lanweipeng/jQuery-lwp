@@ -92,5 +92,5 @@ module.exports=function(grunt){
     all:['test/*.html']
   }
   });
-  grunt.registerTask('default', ['concat','qunit']);
+  grunt.registerTask('default', ['qunit']);
 }

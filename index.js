@@ -4,6 +4,8 @@
       arr = [],
       getProto = Object.getPrototypeOf,
       push = arr.push,
+      slice=arr.slice,
+      whitespace = "[\\x20\\t\\r\\n\\f]",
       indexOf = arr.indexOf;
       var flat=arr.flat?function(array){
         return arr.flat.call(array)
@@ -20,13 +22,23 @@
       // console.log(toString.call(obj))
       return class2type[toString.call(obj)]
     }
-    var jQuery = function (selector) {
-      return new jQuery.fn.init(selector);
+    var jQuery = function (selector,context,rootjQuery) {
+      return new jQuery.fn.init(selector,context,rootjQuery);
     };
     jQuery.fn = jQuery.prototype = {
       length: 0,
       each: function (callback) {//啥用
         return jQuery.each(this, callback)
+      },
+      toArray:function(){
+        slice.call(this);
+      },
+      get:function(num){
+        if(num==null){
+          return slice.call(this)
+        }
+          return num<0?this[this.length+num]:this[num]
+       
       }
     }
     var rootjQuery,
@@ -36,6 +48,11 @@
         if (!selector) {
           return this;
         } 
+        if(selector.nodeType){
+          this.context=this[0]=selector;
+          this.length=1;
+          return this;
+        }
         root=root||rootjQuery;
         // else {
           // if (jQuery.type(selector) === 'string') {
@@ -148,6 +165,9 @@
         }
         return true;
       },
+      isNumberic:function(obj){
+        return !isNaN(parseFloat(obj)&&isFinite(obj))
+      },
       grep:function(arr,callback,invert){
         var res=[],
         callbackExpec=!invert;
@@ -158,6 +178,12 @@
           }
         }
         return res
+      },
+      trim:function(str){
+        var rtrim=str.replace(/^\s+/g,"")
+        rtrim=rtrim.replace(/\s+$/g,"")
+        return str==null?"":rtrim
+        
       },
       map:function(elems,callback,arg){
         var i=0,len=elems.length,res=[],value;
@@ -270,7 +296,7 @@
       return self;
     };
     jQuery.each('click'.split(' '),function(_i,name){
-      jquery.fn[name]=function(){
+      jQuery.fn[name]=function(){
         return arguments.length>0&&this.on(name)
       }
     })
@@ -280,74 +306,74 @@
 })(window)
 
 
-var element
+// var element
 
 
 
-var $ = function (select) {
-  if (typeof select === 'function') {
-    window.onload = select()
-  }
-  else if (select === undefined) {
+// var $ = function (select) {
+//   if (typeof select === 'function') {
+//     window.onload = select()
+//   }
+//   else if (select === undefined) {
 
-    return
-  }
-  else if (select instanceof Node) {
-    element = select
-    return $
-  } else if (select.substr(0, 1) == '#') {
-    s = document.querySelector(select)
-    return document.querySelector(select)
-  } else {
-    return document.querySelectorAll(select)
+//     return
+//   }
+//   else if (select instanceof Node) {
+//     element = select
+//     return $
+//   } else if (select.substr(0, 1) == '#') {
+//     s = document.querySelector(select)
+//     return document.querySelector(select)
+//   } else {
+//     return document.querySelectorAll(select)
 
-  }
-  return this
-}
-
-
-$.getButton = function (event) {
-  if (document.implementation.hasFeature('MouseEvents', '2.0')) {
-    return event.button
-  } else {
-    switch (event.button) {
-      case 7: return 0
-      case 6: return 2
-      case 4: return 1
-    }
-  }
-}
-$.getCharCode = function (event) {
-  if (typeof event.charCode == 'number') {
-    return event.charCode
-  } else {
-    return event.keyCode
-  }
-}
-$.addClass = function (string) {
-  element.classList.add(string)
-}
-$.removeClass = function (string) {
-  element.classList.remove(string)
-}
-
-$.getClipboardText = function (event) {
-  var clipboardData = (event.clipboardData || window.clipboardData)
-  return clipboardData.getData('text')
-}
-$.setClipboardText = function (event, value) {
-  if (event.clipboardData) {
-    return event.clipboardData.setData('text/plian', value)
-  } else if (window.clipboardData) {
-    return window.clipboardData.setData('text', value)
-  }
-}
-$.css = function (x, y) {
-  console.log(s)
-}
+//   }
+//   return this
+// }
 
 
-toString = Object.prototype.toString;
+// $.getButton = function (event) {
+//   if (document.implementation.hasFeature('MouseEvents', '2.0')) {
+//     return event.button
+//   } else {
+//     switch (event.button) {
+//       case 7: return 0
+//       case 6: return 2
+//       case 4: return 1
+//     }
+//   }
+// }
+// $.getCharCode = function (event) {
+//   if (typeof event.charCode == 'number') {
+//     return event.charCode
+//   } else {
+//     return event.keyCode
+//   }
+// }
+// $.addClass = function (string) {
+//   element.classList.add(string)
+// }
+// $.removeClass = function (string) {
+//   element.classList.remove(string)
+// }
+
+// $.getClipboardText = function (event) {
+//   var clipboardData = (event.clipboardData || window.clipboardData)
+//   return clipboardData.getData('text')
+// }
+// $.setClipboardText = function (event, value) {
+//   if (event.clipboardData) {
+//     return event.clipboardData.setData('text/plian', value)
+//   } else if (window.clipboardData) {
+//     return window.clipboardData.setData('text', value)
+//   }
+// }
+// $.css = function (x, y) {
+//   console.log(s)
+// }
+
+
+// toString = Object.prototype.toString;
 
 
 
